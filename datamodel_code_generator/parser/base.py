@@ -29,6 +29,7 @@ from datamodel_code_generator.imports import IMPORT_ANNOTATIONS, Import, Imports
 from datamodel_code_generator.model import pydantic as pydantic_model
 from datamodel_code_generator.model.base import (
     ALL_MODEL,
+    HEADER_CODE_INCLUDE,
     UNDEFINED,
     BaseClassDataType,
     DataModel,
@@ -365,6 +366,12 @@ class Parser(ABC):
             str, Any
         ] = extra_template_data or defaultdict(dict)
 
+        self.header_code_include_extra_template_data = None
+        if self.extra_template_data:
+            self.header_code_include_extra_template_data = self.extra_template_data.get(
+                HEADER_CODE_INCLUDE
+            )
+
         if allow_population_by_field_name:
             self.extra_template_data[ALL_MODEL]['allow_population_by_field_name'] = True
 
@@ -690,6 +697,14 @@ class Parser(ABC):
                                     model_field.default = enum_member
             if with_import:
                 result += [str(self.imports), str(imports), '\n']
+
+            if self.header_code_include_extra_template_data:
+                result += [
+                    "#---------------- CUSTOM Included Code ---Starting ----------",
+                    self.header_code_include_extra_template_data.rstrip(),
+                    "#---------------- CUSTOM Included Code ---ending ----------",
+                    "",
+                ]
 
             code = dump_templates(models)
             result += [code]

@@ -29,7 +29,9 @@ TEMPLATE_DIR: Path = Path(__file__).parents[0] / 'template'
 
 OPTIONAL: str = 'Optional'
 
+# extra_template_data - special keywords - global actions
 ALL_MODEL: str = '#all#'
+HEADER_CODE_INCLUDE: str = '#header_code_include#'
 
 
 class ConstraintsBase(BaseModel):
